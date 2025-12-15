@@ -1,0 +1,9 @@
+ * OBSERVER PATTERN - Notification d'événements
+ *
+ * Cas d'usage : Système de trading en temps réel avec alertes
+ *
+ * PROBLÈME RÉSOLU :
+ * - Permet à plusieurs objets d'être notifiés automatiquement des changements
+ * - Découplage entre le sujet (Subject) et les observateurs (Observers)
+ * - Facilite l'ajout/suppression d'observateurs dynamiquement
+ * - Implémente le principe publish-subscribe

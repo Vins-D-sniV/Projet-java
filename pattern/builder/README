@@ -1,0 +1,9 @@
+ * BUILDER PATTERN - Constructeur d'objets complexes
+ *
+ * Cas d'usage : Construction de requêtes SQL dynamiques
+ *
+ * PROBLÈME RÉSOLU :
+ * - Évite les constructeurs avec trop de paramètres
+ * - Permet de créer des objets étape par étape
+ * - Rend le code plus lisible et maintenable
+ * - Permet des paramètres optionnels facilement
