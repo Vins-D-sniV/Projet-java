@@ -1,0 +1,293 @@
+# Product Management API - Spring Boot CRUD
+
+Application REST pour la gestion de produits avec tous les verbes HTTP et respect des principes SOLID.
+
+##Technologies
+
+- **Java 17**
+- **Spring Boot 3.2.0**
+- **Spring Data JPA**
+- **H2 Database** (base de données en mémoire)
+- **Lombok**
+- **Bean Validation**
+- **Maven**
+
+##Principes SOLID Appliqués
+
+### **S - Single Responsibility Principle**
+- Chaque classe a une seule responsabilité
+- `ProductController` : gestion des requêtes HTTP
+- `ProductService` : logique métier
+- `ProductRepository` : accès aux données
+- `ProductMapper` : conversion DTO/Entity
+
+### **O - Open/Closed Principle**
+- Interface `ProductService` permet l'extension sans modification
+- Utilisation d'interfaces Spring Data JPA
+
+### **L - Liskov Substitution Principle**
+- `ProductServiceImpl` implémente `ProductService` et peut être substituée
+- Utilisation de l'injection de dépendances
+
+### **I - Interface Segregation Principle**
+- Interfaces spécifiques et ciblées
+- DTOs séparés pour création (`ProductCreateDTO`) et réponse (`ProductDTO`)
+
+### **D - Dependency Inversion Principle**
+- Dépendances sur les abstractions (interfaces)
+- Injection via constructeur avec `@RequiredArgsConstructor`
+
+##Architecture
+
+```
+product-management/
+├── src/main/java/com/example/productmanagement/
+│   ├── ProductManagementApplication.java
+│   ├── controller/
+│   │   └── ProductController.java
+│   ├── service/
+│   │   ├── ProductService.java (interface)
+│   │   └── impl/
+│   │       └── ProductServiceImpl.java
+│   ├── repository/
+│   │   └── ProductRepository.java
+│   ├── domain/
+│   │   └── Product.java
+│   ├── dto/
+│   │   ├── ProductDTO.java
+│   │   └── ProductCreateDTO.java
+│   ├── mapper/
+│   │   └── ProductMapper.java
+│   └── exception/
+│       ├── ProductNotFoundException.java
+│       └── GlobalExceptionHandler.java
+└── src/main/resources/
+    └── application.properties
+```
+
+## 🔧 Installation et Démarrage
+
+### Prérequis
+- Java 17 ou supérieur
+- Maven 3.6+
+
+### Étapes
+
+1. **Cloner le projet**
+```bash
+git clone <votre-repo>
+cd product-management
+```
+
+2. **Compiler le projet**
+```bash
+mvn clean install
+```
+
+3. **Lancer l'application**
+```bash
+mvn spring-boot:run
+```
+
+L'application démarre sur **http://localhost:8080**
+
+## 📡 API Endpoints
+
+### **POST** - Créer un produit
+```http
+POST /api/products
+Content-Type: application/json
+
+{
+  "name": "Laptop Dell XPS 15",
+  "description": "Ordinateur portable haute performance",
+  "price": 1299.99,
+  "stock": 10
+}
+```
+
+**Réponse** : `201 Created`
+```json
+{
+  "id": 1,
+  "name": "Laptop Dell XPS 15",
+  "description": "Ordinateur portable haute performance",
+  "price": 1299.99,
+  "stock": 10,
+  "createdAt": "2025-12-30T10:30:00",
+  "updatedAt": "2025-12-30T10:30:00"
+}
+```
+
+### **GET** - Récupérer tous les produits
+```http
+GET /api/products
+```
+
+**Réponse** : `200 OK`
+```json
+[
+  {
+    "id": 1,
+    "name": "Laptop Dell XPS 15",
+    "price": 1299.99,
+    "stock": 10
+  }
+]
+```
+
+### **GET** - Rechercher par nom
+```http
+GET /api/products?name=laptop
+```
+
+### **GET** - Récupérer un produit par ID
+```http
+GET /api/products/1
+```
+
+**Réponse** : `200 OK` ou `404 Not Found`
+
+### **PUT** - Mise à jour complète
+```http
+PUT /api/products/1
+Content-Type: application/json
+
+{
+  "name": "Laptop Dell XPS 15 Updated",
+  "description": "Nouveau modèle 2025",
+  "price": 1399.99,
+  "stock": 15
+}
+```
+
+**Réponse** : `200 OK`
+
+### **PATCH** - Mise à jour partielle
+```http
+PATCH /api/products/1
+Content-Type: application/json
+
+{
+  "price": 1199.99,
+  "stock": 20
+}
+```
+
+**Réponse** : `200 OK`
+
+### **DELETE** - Supprimer un produit
+```http
+DELETE /api/products/1
+```
+
+**Réponse** : `204 No Content`
+
+### **HEAD** - Vérifier l'existence
+```http
+HEAD /api/products/1
+```
+
+**Réponse** : `200 OK` si existe, `404 Not Found` sinon
+
+### **OPTIONS** - Méthodes supportées
+```http
+OPTIONS /api/products
+```
+
+**Réponse** : `200 OK` avec header `Allow: GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS`
+
+## 🧪 Tester l'API
+
+### Avec cURL
+
+**Créer un produit**
+```bash
+curl -X POST http://localhost:8080/api/products \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Smartphone Galaxy S24",
+    "description": "Dernier modèle Samsung",
+    "price": 899.99,
+    "stock": 50
+  }'
+```
+
+**Récupérer tous les produits**
+```bash
+curl http://localhost:8080/api/products
+```
+
+**Mettre à jour partiellement**
+```bash
+curl -X PATCH http://localhost:8080/api/products/1 \
+  -H "Content-Type: application/json" \
+  -d '{"price": 799.99}'
+```
+
+**Supprimer**
+```bash
+curl -X DELETE http://localhost:8080/api/products/1
+```
+
+### Avec Postman
+Importez la collection en créant des requêtes vers `http://localhost:8080/api/products`
+
+## 🗄️ Base de Données H2
+
+Accédez à la console H2 : **http://localhost:8080/h2-console**
+
+- **JDBC URL** : `jdbc:h2:mem:productdb`
+- **Username** : `sa`
+- **Password** : *(vide)*
+
+## Validation des Données
+
+Les validations suivantes sont appliquées :
+
+- **name** : obligatoire, 2-100 caractères
+- **description** : optionnel, max 1000 caractères
+- **price** : obligatoire, doit être > 0
+- **stock** : obligatoire, doit être ≥ 0
+
+## Gestion des Erreurs
+
+### Produit non trouvé
+```json
+{
+  "status": 404,
+  "message": "Produit non trouvé avec l'ID: 1",
+  "timestamp": "2025-12-30T10:30:00"
+}
+```
+
+### Validation échouée
+```json
+{
+  "timestamp": "2025-12-30T10:30:00",
+  "status": 400,
+  "errors": {
+    "name": "Le nom est obligatoire",
+    "price": "Le prix doit être supérieur à 0"
+  }
+}
+```
+
+##  Évolutions Possibles
+
+- Ajouter une authentification JWT
+- Implémenter la pagination
+- Ajouter des filtres avancés
+- Intégrer Swagger/OpenAPI
+- Migrer vers PostgreSQL/MySQL
+- Ajouter des tests unitaires et d'intégration
+- Implémenter un cache Redis
+- Ajouter des événements avec Spring Events
+
+## Licence
+
+MIT License
+
+## Auteur
+
+Vincent NZE - Application de démonstration CRUD Spring Boot
